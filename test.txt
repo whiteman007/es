@@ -1,0 +1,15 @@
+$url=$_SERVER["PHP_SELF"];
+$param="t";
+$base_url = strtok($url, '?');              // Get the base url
+    $parsed_url = parse_url($url);              // Parse it 
+	var_dump($parsed_url);
+    $query = $parsed_url['query'];              // Get the query string
+    parse_str( $query, $parameters );           // Convert Parameters into array
+    unset( $parameters[$param] );               // Delete the one you want
+    $new_query = http_build_query($parameters); // Rebuilt query string
+	echo "<script>alert('".$new_query."');</script>";
+	$last=$base_url.'?'.$new_query;            // Finally url is ready
+	echo $last;
+	header('Location: '.$last);
+  exit;
+//echo "<script>alert('".$sql_condition."');</script>";
