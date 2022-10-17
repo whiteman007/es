@@ -105,7 +105,6 @@ foreach ($_FILES['files']['tmp_name'] as $key => $value) {
 //echo $filenames;
 header("Location: uploaded_files.php?u=1&".$filenames."&t=".$total_count);
 exit();
-//echo "test=".$filenames;
 
 
 ?>

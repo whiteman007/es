@@ -48,8 +48,6 @@ include('db_config.php');
      
 					
 												<div class="panel-heading">
-												<label for="main_cat">اختر التصنيف الثانوي:
-				</label>
 														<select required id="sub_cat" name="sub_cat" class="form-control">
 														<option hidden disabled selected value> -- التصنيفات الثانوية -- </option>
 														</select>
@@ -94,7 +92,7 @@ for ($i=1;$i<=$files_total;$i++)
 												<source src="uploads/'.$file_name.'"#t=0.1" type="video/mp4" /></video>
 										</a>
 										<label for="imageupload'.$i.'">صورة العرض:</label>
-  <input type="file" id="imageupload'.$i.'" name="imageupload'.$i.'" accept="image/*" >
+  <input type="file" id="imageupload'.$i.'" name="imageupload'.$i.'" accept="image/*">
 								</div>
 						</div>
 						<div class="col-sm-10">

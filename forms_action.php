@@ -16,7 +16,6 @@ $sql_max="SELECT MAX(file_number) AS last FROM ".$tablename.";";
 //echo $sql_max;
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
-$conn->set_charset("utf8");
 // Check connection
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
@@ -69,8 +68,6 @@ $deleted_files=$_POST['deleted'];
 
 //echo $total_uploaded;
 if($deleted_files!=0){//echo "<br/>".$deleted_files."<br/>";
-
-
 }
 else{//echo "\n No deleted files! \n";
 }
@@ -78,22 +75,6 @@ else{//echo "\n No deleted files! \n";
 
 
 $del_arr = explode(',', $deleted_files);
-echo  "<br>";
-//if(sizeof($del_arr)==$total_uploaded){
-	//echo "failed\n";
-	//echo sizeof($del_arr);
-	//echo $total_uploaded;
-	//print_r(sizeof($del_arr));
-	//echo ("<script LANGUAGE='JavaScript'>
-    //window.alert('لا يوجد أي ملف للتحميل');
-    //window.location.href='upload.php';
-    //</script>");
-	
-	
-//}
-	
-//else{
-
 for ($i=1;$i<=$total_uploaded;$i++){
 	if (in_array($i,$del_arr)==false){
 		$type=$_POST['type'.$i];
@@ -145,18 +126,17 @@ for ($i=1;$i<=$total_uploaded;$i++){
     mkdir($path, 0777, true);
 }
 
-$name="";
-$final_name="";
+
 
 if($type_abbr=="v" || $type_abbr=="vg"){	
 if ($_FILES['imageupload'.$i]['size'] == 0 && $_FILES['imageupload'.$i]['error'] == 0){$name="";}	
 else{
 $filepath=$path."thumbnails/";
-$final_filepath=$filepath."final/";
 
 $temp = $_FILES['imageupload'.$i]['tmp_name'];
 $file_temp_name = $_FILES['imageupload'.$i]['name'];
 $file_ext = pathinfo($file_temp_name, PATHINFO_EXTENSION);
+
 $name = $file_id."-thumbnail.".$file_ext;
 
 if (!file_exists($filepath)) 
@@ -166,49 +146,22 @@ if(move_uploaded_file($temp, $filepath . $name)){
     }else{
         echo "failed";
     }
-   
-$width = 500;
-$height = 500;
-
-$layers = array();
-
-
-$layers[] = imagecreatefromjpeg($filepath.$name);
-$layers[] = imagecreatefrompng("assets/img/placeholder.png");
-$image = imagecreatetruecolor($width, $height);
-
-// to make background transparent?
-imagealphablending($image, false);
-$transparency = imagecolorallocatealpha($image, 0, 0, 0, 127);
-imagefill($image, 0, 0, $transparency);
-imagesavealpha($image, true);
-
-imagealphablending($image, true);
-for ($i = 0; $i < count($layers); $i++) {
-    imagecopy($image, $layers[$i], 0, 0, 0, 0, $width, $height);
+    
 }
-imagealphablending($image, false);
-imagesavealpha($image, true);
-
-if (!file_exists($final_filepath)) 
-mkdir($final_filepath, 0777, true);
-
-$final_name=$final_filepath.$file_id."-final.".$file_ext;
-
-imagejpeg($image,$final_name ); 
+}
+else{$name="";}			 
+}
 	
-	}}}
-	
+		
+		
+		
 		rename("uploads/".$u_f_name, $path.$file_name);
 		
-		$sql="INSERT IGNORE  INTO ".$tablename." (file_id, file_name, file_path, type, tags, month, year,cat_id,  description, caption, priority,thumbnail,final_thumbnail) VALUES ('".$file_id."','".$file_name."','".$path."','".$file_type."','".$tags."','".$month."','".$year."','".$sub_cat."','".$desc."','".$search."','".$pr."','".$name."','".$final_name."');";
-	
-		$sql_all_files="INSERT IGNORE  INTO all_files (file_id, file_name, file_path, type, tags, month, year,cat_id,  description, caption, priority,thumbnail,final_thumbnail) VALUES ('".$file_id."','".$file_name."','".$path."','".$file_type."','".$tags."','".$month."','".$year."','".$sub_cat."','".$desc."','".$search."','".$pr."','".$name."','".$final_name."');";
+		$sql="INSERT IGNORE  INTO ".$tablename." (file_id, file_name, file_path, type, tags, month, year,cat_id,  description, caption, priority,thumbnail) VALUES ('".$file_id."','".$file_name."','".$path."','".$file_type."','".$tags."','".$month."','".$year."','".$main_cat."','".$desc."','".$search."','".$pr."','".$name."');";
 	
 	
-	
-	echo $sql;
-	if (($conn->query($sql) === TRUE)&&($conn->query($sql_all_files) === TRUE)) {
+	//echo $sql;
+	if ($conn->query($sql) === TRUE) {
   echo "New record created successfully";
 } else {
   echo "Error: " . $sql . "<br>" . $conn->error;
@@ -220,32 +173,7 @@ $fid=$fid+1;
 print_r($ids_array);	
 
 
-//}
+
 $conn->close();
-
-
-$dir="uploads/";
-
-
-if (is_dir($dir))
- {
-  $objects = scandir($dir);
-
-  foreach ($objects as $object)
-  {
-   if ($object != '.' && $object != '..')
-   {
-    if (filetype($dir.'/'.$object) == 'dir') {rmdir($dir.'/'.$object);}
-    else {unlink($dir.'/'.$object);}
-   }
-  }
-
-  reset($objects);
-  rmdir($dir);
- }
- echo ("<script LANGUAGE='JavaScript'>
-    window.alert('تم التحميل');
-    window.location.href='upload.php';
-    </script>");
-	
+rmdir("uploads/");
 ?>
